@@ -43,9 +43,11 @@ const Fraction Fraction::operator*(const Fraction &crFraction) const noexcept
 	return res;
 }
 
-const Fraction Fraction::operator/(const Fraction &crFraction) const noexcept
+const Fraction Fraction::operator/(const Fraction &crFraction) const noexcept(false)
 {
 	Fraction res{ x * crFraction.y, crFraction.x * y };
+	if (!res.y)
+		throw std::invalid_argument("Division by zero\n");
 
 	Fraction::simplify(res);
 
