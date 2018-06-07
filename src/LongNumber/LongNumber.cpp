@@ -1,7 +1,8 @@
 #include <iostream> // std::cout, std::cerr 
 #include <algorithm> // std::max
 #include <cassert> // assert
-#include <string>
+#include <string> // std::string
+#include <functional> // std::function
 
 #include "LongNumber.hpp"
 
@@ -277,7 +278,12 @@ const LongNumber LongNumber::operator/(const LongNumber &crLongNumber) const noe
 
 const LongNumber LongNumber::operator%(const LongNumber &crLongNumber) const noexcept
 {
-	return LongNumber();
+	LongNumber res{ *this - (*this / crLongNumber) * crLongNumber };
+
+	if (!res.sign_)
+		res += crLongNumber;
+
+	return (res);
 }
 
 inline const LongNumber& LongNumber::operator++() noexcept
@@ -364,32 +370,32 @@ const bool LongNumber::operator!() const noexcept
 
 const LongNumber LongNumber::operator~() const noexcept
 {
-	return LongNumber();
+	return {};
 }
 
 const LongNumber LongNumber::operator^(const LongNumber &) const noexcept
 {
-	return LongNumber();
+	return {};
 }
 
-const LongNumber LongNumber::operator|(const LongNumber &) const noexcept
+const LongNumber LongNumber::operator|(const LongNumber&) const noexcept
 {
-	return LongNumber();
+	return {};
 }
 
-const LongNumber LongNumber::operator&(const LongNumber &) const noexcept
+const LongNumber LongNumber::operator&(const LongNumber &crLongNumber) const noexcept
 {
-	return LongNumber();
+	return {};
 }
 
 const LongNumber LongNumber::operator<<(const LongNumber &) const noexcept
 {
-	return LongNumber();
+	return {};
 }
 
 const LongNumber LongNumber::operator>>(const LongNumber &) const noexcept
 {
-	return LongNumber();
+	return {};
 }
 
 #pragma endregion
@@ -474,11 +480,15 @@ LongNumber::operator std::string() const noexcept(false)
 #pragma endregion
 
 /* [[ noreturn ]] */
-void LongNumber::print() const noexcept
+void LongNumber::print(bool showPlus /* = false */) const noexcept
 {
 	try
 	{
-		std::cout << (sign_ ? '+' : '-');
+		if (!sign_)
+			std::cout << '-';
+		else if (showPlus)
+			std::cout << '+';
+		
 		for (auto i{ 0u }; i <= lastDigit_; ++i)
 			std::cout << digits_.at(lastDigit_ - i);
 
@@ -500,6 +510,27 @@ const bool LongNumber::isOdd() const noexcept
 const bool LongNumber::isEven() const noexcept
 {
 	return (!isOdd());
+}
+
+const LongNumber LongNumber::power(LongNumber &) const noexcept
+{
+	return LongNumber();
+}
+
+const LongNumber LongNumber::factorial() const noexcept
+{
+	auto res{ *this };
+	std::function<LongNumber(const LongNumber&)> fact = [&fact](const LongNumber &x) -> LongNumber
+	{
+		if (x < 0)
+			return { 0 };
+		else if (!x || x == 1)
+			return { 1 };
+		else
+			return { x * fact(x - 1) };
+	};
+	
+	return fact(res);
 }
 
 const LongNumber LongNumber::lastDigits(u_t n) const noexcept

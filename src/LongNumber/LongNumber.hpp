@@ -95,10 +95,13 @@ public:
 #pragma endregion
 
 	[[ noreturn ]]
-	void print() const noexcept;
+	void print(bool = false) const noexcept;
 
 	const bool isOdd() const noexcept;
 	const bool isEven() const noexcept;
+
+	const LongNumber power(LongNumber&) const noexcept;
+	const LongNumber factorial() const noexcept;
 
 	const LongNumber lastDigits(u_t) const noexcept;
 	const u_t digits() const noexcept;
