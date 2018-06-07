@@ -512,9 +512,21 @@ const bool LongNumber::isEven() const noexcept
 	return (!isOdd());
 }
 
-const LongNumber LongNumber::power(LongNumber &) const noexcept
+const LongNumber LongNumber::power(LongNumber &crLongNumber) const noexcept
 {
-	return LongNumber();
+	LongNumber a(*this),
+		b(crLongNumber),
+		res(1);
+	while (b != 0)
+	{
+		if (b.isOdd()) 
+			res *= a;
+
+		a *= a;
+		b /= 2;
+	}
+
+	return res;
 }
 
 const LongNumber LongNumber::factorial() const noexcept

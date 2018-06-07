@@ -9,12 +9,12 @@ void test()
 {
 	using namespace std;
 
-	LNUM a(15),
-		 b(10);
+	LNUM a(-2),
+		 b(3);
 	a.print();
 	b.print();
 	a.factorial().print();
-	(a | b).print(); 
+	a.power(b).print(); 
 }
 
 int main()
