@@ -9,7 +9,7 @@ LongNumber::LongNumber(bool sign, std::array<char, MAX_DIGITS> digits, size_t la
 	digits_(digits),
 	lastDigit_(lastDigit)
 {
-	digits_.fill('0');
+	std::for_each(digits_.begin(), digits_.end(), [](auto &c) { if (c == '\0') c = '0'; });
 }
 
 void LongNumber::removeZeroes(LongNumber &rLongNumber) const noexcept
@@ -17,6 +17,8 @@ void LongNumber::removeZeroes(LongNumber &rLongNumber) const noexcept
 	while (rLongNumber.digits_[rLongNumber.lastDigit_] == '0')
 		if (rLongNumber.lastDigit_)
 			rLongNumber.lastDigit_--;
+		else
+			break;
 
 	if (!rLongNumber.lastDigit_ && !rLongNumber.digits_[0])
 		rLongNumber.sign_ = true;
@@ -54,9 +56,23 @@ LongNumber::LongNumber() noexcept :
 LongNumber::LongNumber(std::string_view str) noexcept :
 	sign_(true),
 	digits_({}),
-	lastDigit_(0)
+	lastDigit_(str.length())
 {
 	digits_.fill('0');
+
+	assert(lastDigit_ < LongNumber::MAX_DIGITS);
+	if (lastDigit_)
+	{
+		if (str.front() == '-')
+			sign_ = false;
+
+		if(!isdigit(str.front()))
+			str.remove_prefix(1);
+
+		unsigned i{};
+		for (auto &&c : str)
+			digits_[lastDigit_ - i++] = c;	
+	}
 }
 
 LongNumber::LongNumber(long long x) noexcept :
@@ -77,7 +93,8 @@ LongNumber::LongNumber(long long x) noexcept :
 		x /= 10;
 	}
 
-	lastDigit_--;
+	if(lastDigit_)
+		lastDigit_--;
 }
 
 LongNumber::LongNumber(const LongNumber &crLongNumber) noexcept :
@@ -104,8 +121,8 @@ const LongNumber& LongNumber::operator=(const LongNumber &crLongNumber) noexcept
 {
 	if (*this != crLongNumber)
 	{
-		sign_ = crLongNumber.sign_;
-		digits_ = crLongNumber.digits_;
+		sign_      = crLongNumber.sign_;
+		digits_    = crLongNumber.digits_;
 		lastDigit_ = crLongNumber.lastDigit_;
 	}
 
@@ -127,9 +144,9 @@ const LongNumber LongNumber::operator+(const LongNumber &crLongNumber) const noe
 {
 	if (sign_ != crLongNumber.sign_)
 		if (!sign_)
-			return { crLongNumber - (+*this) };
+			return { crLongNumber - (-*this) };
 		else
-			return { *this - (+crLongNumber) };
+			return { *this - (-crLongNumber) };
 
 	LongNumber c(sign_, {}, std::max(lastDigit_, crLongNumber.lastDigit_) + 1);
 	for (auto i{ 0u }, carry{ 0u }; i <= c.lastDigit_; ++i)
@@ -149,14 +166,14 @@ const LongNumber LongNumber::operator+(const LongNumber &crLongNumber) const noe
 const LongNumber LongNumber::operator-(const LongNumber &crLongNumber) const noexcept
 {
 	if (sign_ != crLongNumber.sign_)
-		return { *this + LongNumber{ !crLongNumber.sign_, crLongNumber.digits_, crLongNumber.lastDigit_ } };
+		return { *this + (-crLongNumber) };
 
-	if (crLongNumber > *this)
+	if ((sign_ && crLongNumber > *this) || (!sign_ && crLongNumber < *this))
 		return (-LongNumber{ crLongNumber - *this });
 
-	LongNumber c{ true, {}, std::max(lastDigit_, crLongNumber.lastDigit_) };
+	LongNumber c{ sign_, {}, std::max(lastDigit_, crLongNumber.lastDigit_) };
 	bool borrow{};
-	for (auto i{ 0u }; i < c.lastDigit_; ++i)
+	for (auto i{ 0u }; i <= c.lastDigit_; ++i)
 	{
 		int v{ digits_[i] - borrow - crLongNumber.digits_[i] };
 		if (digits_[i])
@@ -168,7 +185,7 @@ const LongNumber LongNumber::operator-(const LongNumber &crLongNumber) const noe
 			borrow = true;
 		}
 
-		c.digits_[i] = v % 10;
+		c.digits_[i] = '0' + v % 10;
 	}
 
 	removeZeroes(c);
@@ -178,25 +195,54 @@ const LongNumber LongNumber::operator-(const LongNumber &crLongNumber) const noe
 
 inline const LongNumber LongNumber::operator+() const noexcept
 {
-	return { true, digits_, lastDigit_ };
+	return { sign_, digits_, lastDigit_ };
 }
 
 inline const LongNumber LongNumber::operator-() const noexcept
 {
-	return { false, digits_, lastDigit_ };
+	return { !sign_, digits_, lastDigit_ };
 }
 
-const LongNumber LongNumber::operator*(const LongNumber &) const noexcept
+const LongNumber LongNumber::operator*(const LongNumber &crLongNumber) const noexcept
+{
+	LongNumber c{}, 
+		       row{*this};
+
+	static auto shiftDigit = [&row](unsigned d = 1u) -> void
+	{
+		if (!row.lastDigit_ && row.digits_[0] == '0')
+			return;
+
+		for (int i = static_cast<int>(row.lastDigit_); i; --i)
+			row.digits_.at(i + d) = row.digits_.at(i);
+
+		std::for_each_n(row.digits_.begin(), d, [](auto &c) { c = '0'; });
+
+		row.lastDigit_ += d;
+	};
+
+	for (auto i{ 0u }; i <= crLongNumber.lastDigit_; i++)
+	{
+		for (auto j{ 1u }; j <= crLongNumber.digits_[i] - '0'; j++)
+		{
+			c += row;
+		}
+		shiftDigit();
+	}
+
+	c.sign_ = (sign_ == crLongNumber.sign_);
+
+	removeZeroes(c);
+
+	return (c);
+}
+
+const LongNumber LongNumber::operator/(const LongNumber &crLongNumber) const noexcept(false)
 {
 	return LongNumber();
 }
 
-const LongNumber LongNumber::operator/(const LongNumber &) const noexcept(false)
-{
-	return LongNumber();
-}
-
-const LongNumber LongNumber::operator%(const LongNumber &) const noexcept
+const LongNumber LongNumber::operator%(const LongNumber &crLongNumber) const noexcept
 {
 	return LongNumber();
 }
@@ -229,34 +275,45 @@ inline const LongNumber LongNumber::operator--(int) noexcept
 
 #pragma region Ñomparison operators
 
-const bool LongNumber::operator==(const LongNumber &) const noexcept
+const bool LongNumber::operator==(const LongNumber &crLongNumber) const noexcept
 {
-	return false;
+	if (sign_ != crLongNumber.sign_ || lastDigit_ != crLongNumber.lastDigit_)
+		return false;
+
+	return std::equal(digits_.begin(), digits_.begin() + lastDigit_ + 1, crLongNumber.digits_.begin());
 }
 
-const bool LongNumber::operator!=(const LongNumber &) const noexcept
+const bool LongNumber::operator!=(const LongNumber &crLongNumber) const noexcept
 {
-	return false;
+	return !(*this == crLongNumber);
 }
 
-const bool LongNumber::operator>(const LongNumber &) const noexcept
+const bool LongNumber::operator>(const LongNumber &crLongNumber) const noexcept
 {
-	return false;
+	if (sign_ != crLongNumber.sign_)
+		return (sign_ > crLongNumber.sign_);
+
+	if (lastDigit_ != crLongNumber.lastDigit_)
+		return (lastDigit_ > crLongNumber.lastDigit_);
+
+	const auto length = LongNumber::MAX_DIGITS - lastDigit_ - 1;
+	auto[it1, it2] = std::mismatch(digits_.rbegin() + length, digits_.rend(), crLongNumber.digits_.rbegin() + length);
+	return (it1 == digits_.rend() ? false : (sign_ ? (*it1 > *it2) : (*it1 < *it2)));
 }
 
-const bool LongNumber::operator<(const LongNumber &) const noexcept
+const bool LongNumber::operator<(const LongNumber &crLongNumber) const noexcept
 {
-	return false;
+	return !(*this >= crLongNumber);
 }
 
-const bool LongNumber::operator>=(const LongNumber &) const noexcept
+const bool LongNumber::operator>=(const LongNumber &crLongNumber) const noexcept
 {
-	return false;
+	return (*this > crLongNumber || *this == crLongNumber);
 }
 
-const bool LongNumber::operator<=(const LongNumber &) const noexcept
+const bool LongNumber::operator<=(const LongNumber &crLongNumber) const noexcept
 {
-	return false;
+	return !(*this > crLongNumber);
 }
 
 #pragma endregion
@@ -365,14 +422,20 @@ void LongNumber::operator()() const noexcept
 	dump();
 }
 
-LongNumber::operator bool() const noexcept
+LongNumber::operator bool() const noexcept 
 {
-	return false;
+	return (*this > LongNumber{ 0 });
 }
 
 LongNumber::operator std::string() const noexcept(false)
 {
-	return {};
+	std::string res(sign_ ? "+" : "-");
+
+	//std::rotate_copy(digits_.begin(), digits_.begin() + 2/*+ (lastDigit_ + 1) / 2 - ((lastDigit_  )% 2)*/, digits_.begin() + lastDigit_ + 1, std::back_inserter(res));
+
+	std::copy(digits_.begin(), digits_.begin() + lastDigit_ + 1, std::inserter(res, res.end()));
+
+	return res;
 }
 
 #pragma endregion
@@ -394,4 +457,29 @@ void LongNumber::print() const noexcept
 
 		std::terminate();
 	}
+}
+
+const bool LongNumber::isOdd() const noexcept
+{
+	return ((digits_[0] - '0') & 1);
+}
+
+const bool LongNumber::isEven() const noexcept
+{
+	return (!isOdd());
+}
+
+const LongNumber LongNumber::lastDigits(unsigned n) const noexcept
+{
+	assert(n < LongNumber::MAX_DIGITS && n <= lastDigit_ + 1 && n-- != 0);
+
+	LongNumber c{ true, {}, n};
+	std::copy(digits_.begin(), digits_.begin() + n + 1, c.digits_.begin());
+
+	return (c);
+}
+
+const unsigned LongNumber::digits() const noexcept
+{
+	return (lastDigit_ + 1u);
 }

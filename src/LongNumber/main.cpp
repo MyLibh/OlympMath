@@ -1,15 +1,27 @@
+#include <iostream>
+#include <string>
+
 #include "LongNumber.hpp"
 
 typedef LongNumber LNUM;
 
-int main()
+void test()
 {
-	LNUM a(1), b(1);
+	using namespace std;
+
+	LNUM a(-25),
+		 b(-25);
 	a.print();
 	b.print();
 
-	(a - b).print();
+	(a * b).print();
+}
+
+int main()
+{
+	test();
 
 	system("pause");
 	return 0;
 }
+

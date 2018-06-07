@@ -88,13 +88,21 @@ public:
 #pragma region Other operators
 
 	void operator()() const noexcept;
-	operator bool() const noexcept;
+	explicit operator bool() const noexcept;
 	operator std::string() const noexcept(false); 
 
 #pragma endregion
 
 	[[ noreturn ]]
 	void print() const noexcept;
+
+	const bool isOdd() const noexcept;
+	const bool isEven() const noexcept;
+
+	const LongNumber lastDigits(unsigned) const noexcept;
+	const unsigned digits() const noexcept;
+
+	friend void test();
 
 private:
 	bool                         sign_;

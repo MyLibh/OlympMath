@@ -116,11 +116,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\LongNumber.cpp" />
-    <ClCompile Include="..\src\main.cpp" />
+    <ClCompile Include="..\..\src\LongNumber\LongNumber.cpp" />
+    <ClCompile Include="..\..\src\LongNumber\main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\LongNumber.hpp" />
+    <ClInclude Include="..\..\src\LongNumber\LongNumber.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
