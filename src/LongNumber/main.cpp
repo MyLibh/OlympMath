@@ -3,8 +3,6 @@
 
 #include "LongNumber.hpp"
 
-typedef LongNumber LNUM;
-
 void test()
 {
 	using namespace std;

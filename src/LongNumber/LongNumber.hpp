@@ -1,6 +1,6 @@
 #pragma once
 
-#include <array> // std::array
+#include <array>       // std::array
 #include <string_view> // std::string_view
 
 typedef unsigned u_t;
@@ -94,7 +94,7 @@ public:
 
 #pragma endregion
 
-	[[ noreturn ]]
+	// [[ noreturn ]]
 	void print(bool = false) const noexcept;
 
 	const bool isOdd() const noexcept;
@@ -113,6 +113,8 @@ private:
 	std::array<char, MAX_DIGITS> digits_;
 	u_t                          lastDigit_;
 };
+
+typedef LongNumber LNUM;
 
 std::ostream& operator<<(std::ostream&, const LongNumber&);
 

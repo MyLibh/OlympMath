@@ -1,7 +1,7 @@
-#include <iostream> // std::cout, std::cerr 
-#include <algorithm> // std::max
-#include <cassert> // assert
-#include <string> // std::string
+#include <iostream>   // std::cout, std::cerr 
+#include <algorithm>  // std::max
+#include <cassert>    // assert
+#include <string>     // std::string
 #include <functional> // std::function
 
 #include "LongNumber.hpp"
@@ -34,7 +34,7 @@ void LongNumber::shiftDigit(LongNumber &rLongNumber, u_t d) const noexcept
 	for (long i = static_cast<long>(rLongNumber.lastDigit_); i >= 0; --i)
 		rLongNumber.digits_.at(i + d) = rLongNumber.digits_.at(i);
 
-	std::for_each_n(rLongNumber.digits_.begin(), d, [](auto &c) { c = '0'; });
+	std::for_each(rLongNumber.digits_.begin(), rLongNumber.digits_.begin() + d, [](auto &c) { c = '0'; });
 
 	rLongNumber.lastDigit_ += d;
 }
