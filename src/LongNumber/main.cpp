@@ -14,7 +14,7 @@ void test()
 	a.print();
 	b.print();
 
-	(a * b).print();
+	(a * b).print(); 
 }
 
 int main()

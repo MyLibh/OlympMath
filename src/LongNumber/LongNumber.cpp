@@ -1,6 +1,7 @@
 #include <iostream> // std::cout, std::cerr 
 #include <algorithm> // std::max
 #include <cassert> // assert
+#include <string>
 
 #include "LongNumber.hpp"
 
@@ -22,6 +23,19 @@ void LongNumber::removeZeroes(LongNumber &rLongNumber) const noexcept
 
 	if (!rLongNumber.lastDigit_ && !rLongNumber.digits_[0])
 		rLongNumber.sign_ = true;
+}
+
+void LongNumber::shiftDigit(LongNumber &rLongNumber, u_t d) const noexcept
+{
+	if (!rLongNumber.lastDigit_ && rLongNumber.digits_[0] == '0')
+		return;
+
+	for (long i = static_cast<long>(rLongNumber.lastDigit_); i >= 0; --i)
+		rLongNumber.digits_.at(i + d) = rLongNumber.digits_.at(i);
+
+	std::for_each_n(rLongNumber.digits_.begin(), d, [](auto &c) { c = '0'; });
+
+	rLongNumber.lastDigit_ += d;
 }
 
 void LongNumber::dump() const noexcept
@@ -207,27 +221,12 @@ const LongNumber LongNumber::operator*(const LongNumber &crLongNumber) const noe
 {
 	LongNumber c{}, 
 		       row{*this};
-
-	static auto shiftDigit = [&row](unsigned d = 1u) -> void
-	{
-		if (!row.lastDigit_ && row.digits_[0] == '0')
-			return;
-
-		for (int i = static_cast<int>(row.lastDigit_); i; --i)
-			row.digits_.at(i + d) = row.digits_.at(i);
-
-		std::for_each_n(row.digits_.begin(), d, [](auto &c) { c = '0'; });
-
-		row.lastDigit_ += d;
-	};
-
 	for (auto i{ 0u }; i <= crLongNumber.lastDigit_; i++)
 	{
-		for (auto j{ 1u }; j <= crLongNumber.digits_[i] - '0'; j++)
-		{
+		for (char j{ '1' }; j <= crLongNumber.digits_[i]; ++j)
 			c += row;
-		}
-		shiftDigit();
+
+		shiftDigit(row, 1ll);
 	}
 
 	c.sign_ = (sign_ == crLongNumber.sign_);
@@ -239,7 +238,18 @@ const LongNumber LongNumber::operator*(const LongNumber &crLongNumber) const noe
 
 const LongNumber LongNumber::operator/(const LongNumber &crLongNumber) const noexcept(false)
 {
-	return LongNumber();
+	if (!crLongNumber)
+		throw std::invalid_argument("Division by zero\n");
+
+	LongNumber c{ (sign_ == crLongNumber.sign_), {}, 0 },
+		row{};
+
+	for (long i = static_cast<long>(lastDigit_); i >= 0; --i)
+	{
+		shiftDigit(row, 1);
+	}
+
+	return (c);
 }
 
 const LongNumber LongNumber::operator%(const LongNumber &crLongNumber) const noexcept
@@ -322,7 +332,7 @@ const bool LongNumber::operator<=(const LongNumber &crLongNumber) const noexcept
 
 const bool LongNumber::operator!() const noexcept
 {
-	return false;
+	return (*this == LongNumber{ 0ll });
 }
 
 #pragma endregion  
@@ -432,8 +442,8 @@ LongNumber::operator std::string() const noexcept(false)
 	std::string res(sign_ ? "+" : "-");
 
 	//std::rotate_copy(digits_.begin(), digits_.begin() + 2/*+ (lastDigit_ + 1) / 2 - ((lastDigit_  )% 2)*/, digits_.begin() + lastDigit_ + 1, std::back_inserter(res));
-
-	std::copy(digits_.begin(), digits_.begin() + lastDigit_ + 1, std::inserter(res, res.end()));
+	const auto length = LongNumber::MAX_DIGITS - lastDigit_ - 1;
+	std::copy(digits_.rbegin() + length, digits_.rend(), std::inserter(res, res.end()));
 
 	return res;
 }
@@ -469,7 +479,7 @@ const bool LongNumber::isEven() const noexcept
 	return (!isOdd());
 }
 
-const LongNumber LongNumber::lastDigits(unsigned n) const noexcept
+const LongNumber LongNumber::lastDigits(u_t n) const noexcept
 {
 	assert(n < LongNumber::MAX_DIGITS && n <= lastDigit_ + 1 && n-- != 0);
 
@@ -479,7 +489,14 @@ const LongNumber LongNumber::lastDigits(unsigned n) const noexcept
 	return (c);
 }
 
-const unsigned LongNumber::digits() const noexcept
+const u_t LongNumber::digits() const noexcept
 {
 	return (lastDigit_ + 1u);
+}
+
+std::ostream& operator<<(std::ostream &rOstr, const LongNumber &crLongNumber)
+{ 
+	rOstr << crLongNumber.operator std::string();
+
+	return rOstr;
 }

@@ -110,5 +110,6 @@ private:
 	u_t                          lastDigit_;
 };
 
+std::ostream& operator<<(std::ostream&, const LongNumber&);
 
 
