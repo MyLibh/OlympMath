@@ -18,12 +18,12 @@ private:
 	void dump() const noexcept;
 
 public:
-	LongNumber() noexcept;
-	LongNumber(std::string_view) noexcept;
-	LongNumber(long long) noexcept;
+	LongNumber()                  noexcept;
+	LongNumber(std::string_view)  noexcept;
+	LongNumber(long long)         noexcept;
 	LongNumber(const LongNumber&) noexcept;
-	LongNumber(LongNumber&&) noexcept;
-	~LongNumber() noexcept;
+	LongNumber(LongNumber&&)      noexcept;
+	~LongNumber()                 noexcept = default;
 
 #pragma region Arithmetic operators
 

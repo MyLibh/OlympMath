@@ -126,10 +126,6 @@ LongNumber::LongNumber(LongNumber &&rrLongNumber) noexcept :
 {
 }
 
-LongNumber::~LongNumber() noexcept
-{
-}
-
 #pragma region Arithmetic operators
 
 const LongNumber& LongNumber::operator=(const LongNumber &crLongNumber) noexcept
