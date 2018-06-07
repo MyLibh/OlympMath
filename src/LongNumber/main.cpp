@@ -9,12 +9,12 @@ void test()
 {
 	using namespace std;
 
-	LNUM a(-25),
-		 b(-25);
+	LNUM a(25),
+		 b(-5);
 	a.print();
 	b.print();
 
-	(a * b).print(); 
+	(a / b).print(); 
 }
 
 int main()

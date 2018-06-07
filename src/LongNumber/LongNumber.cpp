@@ -241,13 +241,36 @@ const LongNumber LongNumber::operator/(const LongNumber &crLongNumber) const noe
 	if (!crLongNumber)
 		throw std::invalid_argument("Division by zero\n");
 
-	LongNumber c{ (sign_ == crLongNumber.sign_), {}, 0 },
-		row{};
+	bool swap{};
+	if (!crLongNumber.sign_)
+	{
+		const_cast<LongNumber&>(crLongNumber).sign_ = !crLongNumber.sign_;
 
+		swap = true;
+	}
+
+	LongNumber c{},
+		       row{};
 	for (long i = static_cast<long>(lastDigit_); i >= 0; --i)
 	{
 		shiftDigit(row, 1);
+		row.digits_[0] = digits_[i];
+
+		c.digits_[i] = '0';
+		while (!(row < crLongNumber))
+		{
+			c.digits_[i]++;
+
+			row -= crLongNumber;
+		}
 	}
+
+	if (swap)
+		const_cast<LongNumber&>(crLongNumber).sign_ = !crLongNumber.sign_;
+	
+	c.sign_ = (sign_ == crLongNumber.sign_);
+
+	removeZeroes(c);
 
 	return (c);
 }

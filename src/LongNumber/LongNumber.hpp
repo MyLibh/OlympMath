@@ -14,6 +14,7 @@ private:
 	LongNumber(bool, std::array<char, MAX_DIGITS>, u_t) noexcept;
 
 	void removeZeroes(LongNumber&) const noexcept;
+	void shiftDigit(LongNumber&, u_t) const noexcept;
 	void dump() const noexcept;
 
 public:
@@ -99,8 +100,8 @@ public:
 	const bool isOdd() const noexcept;
 	const bool isEven() const noexcept;
 
-	const LongNumber lastDigits(unsigned) const noexcept;
-	const unsigned digits() const noexcept;
+	const LongNumber lastDigits(u_t) const noexcept;
+	const u_t digits() const noexcept;
 
 	friend void test();
 
