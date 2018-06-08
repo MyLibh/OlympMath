@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LongNumber", "LongNumber\Lo
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Fraction", "Fraction\Fraction.vcxproj", "{C97A9C93-D415-4274-BBCB-8ABCA5AFB825}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Polynomial", "Polynomial\Polynomial.vcxproj", "{079938B0-7707-48D8-929A-84D7DFE83E25}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,6 +33,14 @@ Global
 		{C97A9C93-D415-4274-BBCB-8ABCA5AFB825}.Release|x64.Build.0 = Release|x64
 		{C97A9C93-D415-4274-BBCB-8ABCA5AFB825}.Release|x86.ActiveCfg = Release|Win32
 		{C97A9C93-D415-4274-BBCB-8ABCA5AFB825}.Release|x86.Build.0 = Release|Win32
+		{079938B0-7707-48D8-929A-84D7DFE83E25}.Debug|x64.ActiveCfg = Debug|x64
+		{079938B0-7707-48D8-929A-84D7DFE83E25}.Debug|x64.Build.0 = Debug|x64
+		{079938B0-7707-48D8-929A-84D7DFE83E25}.Debug|x86.ActiveCfg = Debug|Win32
+		{079938B0-7707-48D8-929A-84D7DFE83E25}.Debug|x86.Build.0 = Debug|Win32
+		{079938B0-7707-48D8-929A-84D7DFE83E25}.Release|x64.ActiveCfg = Release|x64
+		{079938B0-7707-48D8-929A-84D7DFE83E25}.Release|x64.Build.0 = Release|x64
+		{079938B0-7707-48D8-929A-84D7DFE83E25}.Release|x86.ActiveCfg = Release|Win32
+		{079938B0-7707-48D8-929A-84D7DFE83E25}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

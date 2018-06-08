@@ -1,12 +1,12 @@
 #include <iostream>   // std::cout, std::cerr 
-#include <algorithm>  // std::max
+#include <algorithm>  // std::max, std::for_each, std::mismatch
 #include <cassert>    // assert
 #include <string>     // std::string
 #include <functional> // std::function
 
 #include "LongNumber.hpp"
 
-LongNumber::LongNumber(bool sign, std::array<char, MAX_DIGITS> digits, size_t lastDigit) noexcept :
+LongNumber::LongNumber(bool sign, std::array<char, MAX_DIGITS> digits, u_t lastDigit) noexcept :
 	sign_(sign),
 	digits_(digits),
 	lastDigit_(lastDigit)
