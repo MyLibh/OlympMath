@@ -69,7 +69,7 @@ const Polynomial Polynomial::operator*(const Polynomial &crPolynomial) const noe
 
 	Polynomial res{ vCoef_t(n) };
 	for (auto i{ 0ull }; i < n; ++i)
-		res.coefs_[i] = static_cast<int>(a[i].real() + .5);
+		res.coefs_[i] = static_cast<Polynomial::T>(a[i].real() + .5); // TODO: fix on negatives
 
 	removeLeadingZeros(res);
 
