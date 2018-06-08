@@ -8,6 +8,8 @@ typedef unsigned u_t;
 
 class Polynomial final
 {
+	static void removeLeadingZeros(Polynomial&);
+
 public:
 	using T = int;
 	using vCoef_t = std::vector<T>;
@@ -35,10 +37,9 @@ public:
 	const T& at(size_t) const noexcept(false);
 
 	Polynomial dir() const;
-	base_t evalIn(const base_t&) const noexcept;
+	base_t eval(const base_t&) const noexcept;
 
 	void print() const noexcept;
-
 
 private:
 	vCoef_t coefs_;

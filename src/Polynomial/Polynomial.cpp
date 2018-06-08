@@ -2,8 +2,21 @@
 #include <cmath>     // std::sin, std::cos
 #include <algorithm> // std::min, std::max
 #include <iostream>  // std::cout
+#include <cassert>   // assert
 
 #include "Polynomial.hpp"
+
+void Polynomial::removeLeadingZeros(Polynomial &rPolynomial)
+{
+	size_t count{};
+	for (auto it = rPolynomial.coefs_.rbegin(); it != rPolynomial.coefs_.rend(); it++)
+		if (!*it)
+			count++;
+		else
+			break;
+
+	rPolynomial.coefs_.resize(rPolynomial.coefs_.size() - count);
+}
 
 Polynomial::Polynomial(vCoef_t coefs) noexcept :
 	coefs_(coefs)
@@ -58,6 +71,8 @@ const Polynomial Polynomial::operator*(const Polynomial &crPolynomial) const noe
 	for (auto i{ 0ull }; i < n; ++i)
 		res.coefs_[i] = static_cast<int>(a[i].real() + .5);
 
+	removeLeadingZeros(res);
+
 	return (res);
 }
 
@@ -96,19 +111,51 @@ const Polynomial::T& Polynomial::at(size_t n) const noexcept(false)
 	return (coefs_.at(n));
 }
 
+base_t Polynomial::eval(const base_t &x) const noexcept
+{
+	if (coefs_.size() == 1)
+		return (coefs_[0]);
+
+	base_t res = coefs_.back();
+	const auto size{ coefs_.size() };
+	for (auto i{ 1ull }; i <= size - 1; ++i)
+	{
+		res = res * x;
+		res += coefs_[size - 1 - i];
+	}
+
+	return (res);
+}
+
 void Polynomial::print() const noexcept
 {
-	const auto size = coefs_.size();
-	for (auto i{ 0ull }; i < size; ++i)
-	{
-		std::cout << coefs_[i];
-		
-		if (i)
-			std::cout << "x^" << i;
+	assert(coefs_.size() != 0);
 
-		if(i + 1 < size)
-			std::cout << " + ";
-	}
+	std::cout << "P(x) = ";
+	if (coefs_[0])
+		std::cout << coefs_[0];
+
+	const auto size = coefs_.size();
+	for (auto i{ 1ull }; i < size; ++i)
+		if (coefs_[i])
+		{
+			if (i == 1 && !coefs_[0])
+			{
+				if (std::abs(coefs_[i]) != 1)
+					std::cout << coefs_[i];
+			}
+			else
+			{
+				if(coefs_[i] > 0)
+					std::cout << " + ";
+				else
+					std::cout << " - ";
+
+				if(std::abs(coefs_[i]) != 1)
+					std::cout << std::abs(coefs_[i]) << " * ";			
+			}
+			std::cout << "x^" << i;
+		}
 
 	std::cout << std::endl;
 }
