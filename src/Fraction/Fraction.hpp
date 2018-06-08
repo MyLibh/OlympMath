@@ -4,12 +4,12 @@ typedef long long ll_t;
 
 struct Fraction final
 {
-	Fraction() noexcept;
-	//Fraction(std::string_view) noexcept;
-	Fraction(ll_t, ll_t)      noexcept;
-	Fraction(const Fraction&) noexcept = default;
-	Fraction(Fraction&&)      noexcept = default;
-	~Fraction()               noexcept = default;
+	Fraction()                 noexcept;
+	Fraction(std::string_view) noexcept;
+	Fraction(ll_t, ll_t)       noexcept;
+	Fraction(const Fraction&)  noexcept = default;
+	Fraction(Fraction&&)       noexcept = default;
+	~Fraction()                noexcept = default;
 
 	const Fraction operator+(const Fraction&) const noexcept;
 	const Fraction operator-(const Fraction&) const noexcept;
@@ -25,6 +25,8 @@ struct Fraction final
 	Fraction& operator=(Fraction&&)      noexcept = default;
 
 	static void simplify(Fraction&) noexcept;
+
+	long double eval() const noexcept(false);
 
 public:
 	ll_t x, // Numerator

@@ -1,5 +1,6 @@
-#include <utility> // std::swap
-#include <iostream>
+#include <utility>  // std::swap
+#include <iostream> // std::cout
+#include <sstream>  // std::stringstream
 
 #include "Fraction.hpp"
 
@@ -7,6 +8,15 @@ Fraction::Fraction() noexcept :
 	x(0),
 	y(1)
 {
+}
+
+Fraction::Fraction(std::string_view str) noexcept :
+	x(0),
+	y(1)
+{
+	std::stringstream sstr(str.data());
+	char c{};
+	sstr >> x >> c >> y;
 }
 
 Fraction::Fraction(ll_t num, ll_t den) noexcept :
@@ -69,7 +79,7 @@ const Fraction & Fraction::operator*=(const Fraction &crFraction) noexcept
 	return (*this = *this * crFraction);
 }
 
-const Fraction & Fraction::operator/=(const Fraction &crFraction) noexcept
+const Fraction & Fraction::operator/=(const Fraction &crFraction) noexcept(false)
 {
 	return (*this = *this / crFraction);
 }
@@ -81,6 +91,14 @@ void Fraction::simplify(Fraction &rFraction) noexcept
 		rFraction.x /= gsd;
 		rFraction.y /= gsd;
 	}
+}
+
+long double Fraction::eval() const noexcept(false)
+{
+	if (!y)
+		throw std::invalid_argument("Division by zero\n");
+
+	return static_cast<long double>(x / y);
 }
 
 std::ostream & operator<<(std::ostream &rOstr, const Fraction &crFraction)

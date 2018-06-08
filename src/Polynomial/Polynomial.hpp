@@ -9,11 +9,12 @@ typedef unsigned u_t;
 class Polynomial final
 {
 public:
-	using vCoef_t = std::vector<base_t>;
+	using T = int;
+	using vCoef_t = std::vector<T>;
 
 	Polynomial()                  noexcept = default;
 	Polynomial(vCoef_t)           noexcept;
-	Polynomial(const Polynomial&) noexcept = default;
+	Polynomial(const Polynomial&)          = default;
 	Polynomial(Polynomial&&)      noexcept = default;
 	~Polynomial()                 noexcept = default;
 
@@ -27,11 +28,21 @@ public:
 	const Polynomial& operator*=(const Polynomial&) noexcept;
 	const Polynomial& operator/=(const Polynomial&) noexcept(false);
 
-	base_t& at(u_t) noexcept(false);
-	const base_t& at(u_t) const noexcept(false);
+	Polynomial& operator=(const Polynomial&) = default;
+	Polynomial& operator=(Polynomial&&)      = default;
+
+	T& at(size_t) noexcept(false);
+	const T& at(size_t) const noexcept(false);
+
+	Polynomial dir() const;
+	base_t evalIn(const base_t&) const noexcept;
 
 	void print() const noexcept;
+
 
 private:
 	vCoef_t coefs_;
 };
+
+void FFT(std::vector<base_t>&);
+void IFFT(std::vector<base_t>&);
