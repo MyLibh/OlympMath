@@ -37,6 +37,7 @@ public:
 	const T& at(size_t) const noexcept(false);
 
 	Polynomial dir() const;
+	size_t deg() const noexcept;
 	base_t eval(const base_t&) const noexcept;
 
 	void print() const noexcept;

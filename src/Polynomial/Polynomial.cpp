@@ -9,7 +9,7 @@
 void Polynomial::removeLeadingZeros(Polynomial &rPolynomial)
 {
 	size_t count{};
-	for (auto it = rPolynomial.coefs_.rbegin(); it != rPolynomial.coefs_.rend(); it++)
+	for (auto it = rPolynomial.coefs_.rbegin(); it != rPolynomial.coefs_.rend(); ++it)
 		if (!*it)
 			count++;
 		else
@@ -109,6 +109,22 @@ Polynomial::T& Polynomial::at(size_t n) noexcept(false)
 const Polynomial::T& Polynomial::at(size_t n) const noexcept(false)
 {
 	return (coefs_.at(n));
+}
+
+Polynomial Polynomial::dir() const
+{
+	vCoef_t vec(coefs_.size() - 1);
+	for (size_t i{ vec.size() }; i; --i)
+		vec[i - 1] = coefs_[i] * static_cast<T>(i);
+
+	return { vec };
+}
+
+size_t Polynomial::deg() const noexcept
+{
+	assert(coefs_.size() >= 2);
+
+	return (coefs_.size() - 1);
 }
 
 base_t Polynomial::eval(const base_t &x) const noexcept
