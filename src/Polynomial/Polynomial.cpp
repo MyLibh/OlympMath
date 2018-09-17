@@ -76,9 +76,24 @@ const Polynomial Polynomial::operator*(const Polynomial &crPolynomial) const noe
 	return (res);
 }
 
-const Polynomial Polynomial::operator/(const Polynomial &) const noexcept(false)
+const Polynomial Polynomial::operator/(const Polynomial &crPolynomial) const noexcept(false)
 {
-	return Polynomial();
+	const auto crPolySize_dec{ crPolynomial.coefs_.size() - 1 }, // crPolynomial.coefs_.size() - 1
+		       tmpSize_dec{ coefs_.size() - 1 },                 // coefs_.size() - 1
+		       resSize_dec{ crPolySize_dec + tmpSize_dec + 2 };  // + 2 because of 2 * dec
+	vCoef_t tmp{ coefs_ },
+		    res(resSize_dec + 1);
+	for (auto i{ 0ull }; i < resSize_dec + 1; ++i)
+	{
+		res[resSize_dec - i] = tmp[tmpSize_dec - i] / crPolynomial.coefs_[crPolySize_dec];
+		for (auto j{ 0ull }; j < crPolySize_dec + 1; ++j)
+			tmp[tmpSize_dec - i - j] -= crPolynomial.coefs_[crPolySize_dec - j] * res[resSize_dec - i];
+	}
+
+	if (tmp.size())
+		std::cout << "!!! Lost remainder !!!\n";
+
+	return { res };
 }
 
 const Polynomial& Polynomial::operator+=(const Polynomial &crPolynomial) noexcept
