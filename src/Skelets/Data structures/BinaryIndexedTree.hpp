@@ -1,10 +1,10 @@
-#pragma region Binary indexed tree
+//{ Binary indexed tree
 
-#ifndef _ALGORITHM_ 
+#ifndef _ALGORITHM_
 	#ifdef __has_include
-		#if __has_include(<algorithm>)                
+		#if __has_include(<algorithm>)
 			#include <algorithm>
-		#else                                        
+		#else
 			#error "Missing <algorithm>"
 		#endif /* if __has_include(<algorithm>) */
 	#else
@@ -48,6 +48,12 @@ public:
 			if (auto h{ H(i) }; h < m_size)
 				m_array[h] += m_array[i];
 		}
+	}
+
+	~BinaryIndexedTree()
+	{
+		delete[] m_tree;
+		delete[] m_array;
 	}
 
 	void add_range(ull_t r, type_t value) noexcept
@@ -96,4 +102,4 @@ using BID = BinaryIndexedTree<T>;
 #undef H
 #undef F
 
-#pragma endregion
+//}

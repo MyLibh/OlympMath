@@ -1,4 +1,5 @@
 //{ KMP
+
 #ifndef _STRING_
 	#ifdef __has_include
 		#if __has_include(<string>)
@@ -55,4 +56,5 @@ std::string::size_type KMP(const string &str, long long from, const std::string 
 
 	return (string::npos);
 }
+
 //}
