@@ -20,8 +20,8 @@ class BinaryIndexedTree
 {
 public:
 	using type_t = T;
-	using ll_t = long long;
-	using ull_t = unsigned long long;
+	using ll_t   = long long;
+	using ull_t  = unsigned long long;
 
 public:
 	BinaryIndexedTree(ull_t n) :
