@@ -69,7 +69,7 @@ using mus_t = std::vector<std::vector<us_t>>;
 
 #pragma endregion
 
-signed main()
+signed MAIN()
 {
 	//freopen("sum.in", "r", stdin);
 	//freopen("sum.in", "w", stdout);
