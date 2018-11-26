@@ -13,7 +13,7 @@ struct Node
 	}
 };
 
-class RSQ
+class SegmentTree
 {
 public:
 	using ll_t = long long;
@@ -77,7 +77,7 @@ private:
 	}
 
 public:
-	RSQ(const std::vector<ll_t> &arr) :
+	SegmentTree(const std::vector<ll_t> &arr) :
 		m_tree{ },
 		m_ref_arr{ arr },
 		m_arr_end{ arr.size() - 1 }
