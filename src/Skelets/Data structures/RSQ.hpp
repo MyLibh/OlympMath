@@ -79,28 +79,29 @@ public:
 	RSQ(const std::vector<ll_t> &arr) :
 		m_tree   { },
 		m_ref_arr{ arr },
-		m_arr_end{ arr.size() - 1 }
+		m_arr_end{ static_cast<ll_t>(arr.size() - 1) }
 	{
 		m_tree.resize(arr.size() * 2);
 	}
 
 	void build()
 	{
-		_build(0, 0, m_arr_end);
+		_build(1, 0, m_arr_end);
 	}
 
 	void update(ll_t pos, ll_t val)
 	{
-		_update(pos, val, 0, 0, m_arr_end);
+		_update(pos, val, 1, 0, m_arr_end);
 	}
 
 	ll_t query(ll_t l, ll_t r) const
 	{
-		return _query(l, r, 0, 0, m_arr_end);
+		return _query(l, r, 1, 0, m_arr_end);
 	}
 
 	void dump() const 
 	{
+		std::cout << "RSQ dump" << std::endl;
 		for (ll_t i{}; i < m_tree.size(); ++i)
 			std::cout << i << " " << m_tree[i].val << std::endl;
 	}

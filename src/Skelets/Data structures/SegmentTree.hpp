@@ -1,14 +1,19 @@
 #include <vector>
 #include <iostream>
 
-#include <vector>
-#include <iostream>
+enum class NodeType
+{
+	UNDEFINED,
+	LEAF,
+	VAL
+};
 
 struct Node
 {
 	using ll_t = long long;
 
 	ll_t val;
+	NodeType type;
 
 	static Node merge(const Node &lhv, const Node &rhv)
 	{
@@ -28,7 +33,8 @@ private:
 		{
 			m_tree[node] =
 			{
-				/* m_ref_arr[start] */
+				m_ref_arr[start],
+				NodeType::LEAF
 			};
 		}
 		else
@@ -40,7 +46,8 @@ private:
 
 			m_tree[node] =
 			{
-				/* m_tree[2 * node].val + m_tree[2 * node + 1].val */
+				0/* m_tree[2 * node].val ^ m_tree[2 * node + 1].val */,
+				NodeType::VAL
 			};
 		}
 	}
@@ -49,7 +56,7 @@ private:
 	{
 		if (start == end)
 		{
-			/* m_tree[node] += val; */
+			/* m_tree[node].val = val; */
 		}
 		else
 		{
@@ -59,10 +66,7 @@ private:
 			else
 				_update(pos, val, 2 * node + 1, mid + 1, end);
 
-			m_tree[node] =
-			{
-				/* m_tree[2 * node].val + m_tree[2 * node + 1].val */
-			};
+			/* m_tree[node].val = m_tree[2 * node].val | m_tree[2 * node + 1].val; */
 		}
 	}
 
@@ -72,7 +76,7 @@ private:
 			return 0;
 
 		if (l == start && end == r)
-			return m_tree[node].val;
+			return m_tree[node].val; 
 
 		auto mid = (start + end) / 2;
 		return _query(l, r, 2 * node, start, mid) + _query(l, r, 2 * node, mid + 1, end); // some oper
@@ -82,30 +86,49 @@ public:
 	SegmentTree(const std::vector<ll_t> &arr) :
 		m_tree{ },
 		m_ref_arr{ arr },
-		m_arr_end{ arr.size() - 1 }
+		m_arr_end{ static_cast<ll_t>(arr.size() - 1) }
 	{
 		m_tree.resize(arr.size() * 2);
 	}
 
 	void build()
 	{
-		_build(0, 0, m_arr_end);
+		_build(1, 0, m_arr_end);
 	}
 
 	void update(ll_t pos, ll_t val)
 	{
-		_update(pos, val, 0, 0, m_arr_end);
+		_update(pos, val, 1, 0, m_arr_end);
 	}
 
 	ll_t query(ll_t l, ll_t r) const
 	{
-		return _query(l, r, 0, 0, m_arr_end);
+		return _query(l, r, 1, 0, m_arr_end);
 	}
 
 	void dump() const
 	{
+		std::cout << "SegmentTree dump" << std::endl;
 		for (ll_t i{}; i < m_tree.size(); ++i)
-			std::cout << i << " " /* <<  m_tree[i].val */ << std::endl;
+		{
+			std::cout << i << " " << m_tree[i].val << " ";
+			switch (m_tree[i].type)
+			{
+			case NodeType::UNDEFINED:
+				std::cout << "UNDEFINED";
+				break;
+
+			case NodeType::LEAF:
+				std::cout << "LEAF";
+				break;
+
+			case NodeType::VAL:
+				std::cout << "VAL";
+				break;
+			}
+
+			std::cout << std::endl;
+		}
 	}
 
 private:
