@@ -1,6 +1,6 @@
 #include <utility> // std::swap
 
-typedef long long ll_t;
+using ll_t = long long;
 
 //====================================================================================================================================
 //!
@@ -42,4 +42,18 @@ ll_t GCD(ll_t a, ll_t b) noexcept
 	} while (b);
 
 	return (a << shift);
+}
+
+// Complexity: O(log(min(a, b))) 
+
+ll_t gcd(ll_t a, ll_t b) 
+{
+	while (b) 
+	{
+		a %= b;
+
+		std::swap(a, b);
+	}
+
+	return a;
 }
