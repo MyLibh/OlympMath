@@ -1,6 +1,9 @@
 #include <vector>
 #include <iostream>
 
+#include <vector>
+#include <iostream>
+
 struct Node
 {
 	using ll_t = long long;
@@ -72,8 +75,7 @@ private:
 			return m_tree[node].val;
 
 		auto mid = (start + end) / 2;
-		return _query(l, r, 2 * node, start, mid) + 
-			   _query(l, r, 2 * node, mid + 1, end);
+		return _query(l, r, 2 * node, start, mid) + _query(l, r, 2 * node, mid + 1, end); // some oper
 	}
 
 public:
