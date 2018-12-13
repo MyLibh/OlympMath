@@ -111,3 +111,5 @@ private:
 	const std::vector<ll_t> &m_ref_arr;
 	ll_t                     m_arr_end;
 };
+
+using RangeSumQuery = RSQ;
