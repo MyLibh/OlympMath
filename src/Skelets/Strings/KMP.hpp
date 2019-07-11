@@ -24,7 +24,9 @@
 	#endif /* ifdef __has_include */
 #endif /* ifndef _VECTOR_ */
 
-std::string::size_type KMP(const string &str, long long from, const std::string &pattern)
+using ll_t = long long;
+
+std::string::size_type KMP(const std::string &str, long long from, const std::string &pattern)
 {
 	auto pat_length{ pattern.length() };
 	std::vector<long long> pf (pat_length);
@@ -54,7 +56,7 @@ std::string::size_type KMP(const string &str, long long from, const std::string 
 			return (i - pat_length + 1);
 	}
 
-	return (string::npos);
+	return (std::string::npos);
 }
 
 //}
